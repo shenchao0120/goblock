@@ -15,14 +15,14 @@ type Block struct {
 type BlockHeader struct {
 	PreBlockHash []byte
 	Hash         []byte
-	Nonce        uint32
+	Nonce        int64
 	Height       int64
 	Timestamp    int64
 }
 
-func NewBlock(preHash []byte, nonce uint32, height int64, data []byte) *Block {
+func NewBlock(preHash []byte, height int64, data []byte) *Block {
 	timestamp:=time.Now().Unix()
-	block:=&Block{BlockHeader{PreBlockHash:preHash,Nonce:nonce,Height:height,Timestamp:timestamp},data}
+	block:=&Block{BlockHeader{PreBlockHash:preHash,Height:height,Timestamp:timestamp},data}
 	block.SetHash()
 	return block
 }
@@ -41,5 +41,5 @@ func (b *Block) SetHash() {
 }
 
 func NewGenesisBlock() *Block {
-	return NewBlock([]byte{},0,1,[]byte("Genesis block"))
+	return NewBlock([]byte{},1,[]byte("Genesis block"))
 }
