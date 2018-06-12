@@ -5,9 +5,9 @@ import (
 	"chaoshen.com/goblock/utils"
 	"context"
 	"crypto/sha256"
+	"fmt"
 	"math"
 	"math/big"
-	"fmt"
 )
 
 var MaxNonce = math.MaxInt64
@@ -38,8 +38,8 @@ func (pow *ProofOfWork) PrepareData(nonce int64) []byte {
 	return data
 }
 
-func (pow *ProofOfWork) Run(ctx context.Context,done chan<- struct{}) {
-	nonce:= 1
+func (pow *ProofOfWork) Run(ctx context.Context, done chan<- struct{}) {
+	nonce := 1
 	var hash [32]byte
 	var hashInt big.Int
 	for nonce < MaxNonce {
@@ -52,16 +52,16 @@ func (pow *ProofOfWork) Run(ctx context.Context,done chan<- struct{}) {
 		hash = sha256.Sum256(data)
 		hashInt.SetBytes(hash[:])
 		if hashInt.Cmp(pow.target) == -1 {
-			pow.block.Header.Nonce=int64(nonce)
-			pow.block.Header.Hash=hash[:]
-			fmt.Printf("Mine success nonce:%d,hash:%x\n",nonce,hash)
+			pow.block.Header.Nonce = int64(nonce)
+			pow.block.Header.Hash = hash[:]
+			fmt.Printf("Mine success nonce:%d,hash:%x\n", nonce, hash)
 			done <- struct{}{}
 			return
 		}
 		//if res:=bytes.Compare(hash[:],pow.target.Bytes()) ;res == -1 {
 		//	return int64(nonce),hash
 		//}
-		fmt.Printf("Mine failed nonce:%d,hash:%d,target:%d\n",nonce,&hashInt,pow.target)
+		//fmt.Printf("Mine failed nonce:%d,hash:%d,target:%d\n", nonce, &hashInt, pow.target)
 		nonce++
 		continue
 	}

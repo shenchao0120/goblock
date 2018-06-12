@@ -3,9 +3,13 @@ package core
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/gob"
+	"github.com/op/go-logging"
 	"strconv"
 	"time"
 )
+
+var logger = logging.MustGetLogger("Block")
 
 type Block struct {
 	Header BlockHeader
@@ -21,8 +25,8 @@ type BlockHeader struct {
 }
 
 func NewBlock(preHash []byte, height int64, data []byte) *Block {
-	timestamp:=time.Now().Unix()
-	block:=&Block{BlockHeader{PreBlockHash:preHash,Height:height,Timestamp:timestamp},data}
+	timestamp := time.Now().Unix()
+	block := &Block{BlockHeader{PreBlockHash: preHash, Height: height, Timestamp: timestamp}, data}
 	block.SetHash()
 	return block
 }
@@ -36,10 +40,30 @@ func (b *Block) SetHash() {
 	//h := sha256.New()
 	//h.Write(head)
 	//b.Header.Hash = h.Sum(nil)
-	h:=sha256.Sum256(head)
-	b.Header.Hash=h[:]
+	h := sha256.Sum256(head)
+	b.Header.Hash = h[:]
+}
+
+func (b *Block) Serialize() []byte {
+	var buffer bytes.Buffer
+	encoder := gob.NewEncoder(&buffer)
+	err := encoder.Encode(b)
+	if err != nil {
+		panic(err)
+	}
+	return buffer.Bytes()
 }
 
 func NewGenesisBlock() *Block {
-	return NewBlock([]byte{},1,[]byte("Genesis block"))
+	return NewBlock([]byte{}, 1, []byte("Genesis block"))
+}
+
+func DeserializeBlock(b []byte) *Block {
+	var block Block
+	decoder := gob.NewDecoder(bytes.NewReader(b))
+	err := decoder.Decode(&block)
+	if err != nil {
+		logger.Error("Error:", err)
+	}
+	return &block
 }
