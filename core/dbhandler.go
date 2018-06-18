@@ -3,9 +3,9 @@ package core
 import (
 	"bytes"
 	"github.com/boltdb/bolt"
-	"qiniupkg.com/x/errors.v7"
 	"strconv"
 	"sync"
+	"errors"
 )
 
 var ins *DbHandler
