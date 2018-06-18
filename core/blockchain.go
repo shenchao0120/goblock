@@ -99,6 +99,7 @@ func (bc *Blockchain) Close()  {
 
 
 func (bc *Blockchain) Print() {
+	fmt.Println("Begin to print blockchain data:")
 	bci:=bc.Iterator()
 	for bci.HasNext() {
 		b:=bci.Next()
