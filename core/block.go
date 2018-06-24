@@ -7,13 +7,14 @@ import (
 	"github.com/op/go-logging"
 	"strconv"
 	"time"
+	. "chaoshen.com/goblock/transaction"
 )
 
 var logger = logging.MustGetLogger("Block")
 
 type Block struct {
 	Header BlockHeader
-	Data   []byte
+	Transactions [] *Transaction
 }
 
 type BlockHeader struct {
@@ -24,9 +25,9 @@ type BlockHeader struct {
 	Timestamp    int64
 }
 
-func NewBlock(preHash []byte, height int64, data []byte) *Block {
+func NewBlock(preHash []byte, height int64, trans []*Transaction) *Block {
 	timestamp := time.Now().Unix()
-	block := &Block{BlockHeader{PreBlockHash: preHash, Height: height, Timestamp: timestamp}, data}
+	block := &Block{BlockHeader{PreBlockHash: preHash, Height: height, Timestamp: timestamp}, trans}
 	block.SetHash()
 	return block
 }
@@ -36,12 +37,21 @@ func (b *Block) SetHash() {
 	nonce := []byte(strconv.FormatUint(uint64(b.Header.Nonce), 10))
 	height := []byte(strconv.FormatInt(b.Header.Height, 10))
 
-	head := bytes.Join([][]byte{b.Header.PreBlockHash, nonce, height, b.Data, timestamp}, []byte{})
+	head := bytes.Join([][]byte{b.Header.PreBlockHash, nonce, height, b.HashTransactions(), timestamp}, []byte{})
 	//h := sha256.New()
 	//h.Write(head)
 	//b.Header.Hash = h.Sum(nil)
 	h := sha256.Sum256(head)
 	b.Header.Hash = h[:]
+}
+
+func (b *Block)HashTransactions()[]byte{
+	var hash []byte
+	for _,tx:=range b.Transactions{
+		hash=append(hash,tx.ID...)
+	}
+	result:=sha256.Sum256(hash)
+	return result[:]
 }
 
 func (b *Block) Serialize() []byte {
@@ -54,8 +64,8 @@ func (b *Block) Serialize() []byte {
 	return buffer.Bytes()
 }
 
-func NewGenesisBlock() *Block {
-	return NewBlock([]byte{}, 1, []byte("Genesis block"))
+func NewGenesisBlock(CoinbaseTx *Transaction) *Block {
+	return NewBlock([]byte{}, 1, []*Transaction{CoinbaseTx})
 }
 
 func DeserializeBlock(b []byte) *Block {

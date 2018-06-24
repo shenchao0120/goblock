@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"sync"
 	"errors"
+	"os"
 )
 
 var ins *DbHandler
@@ -32,6 +33,14 @@ func GetDbInstance(path string) *DbHandler {
 		ins = &DbHandler{Path: path, BlocksBucket: blocksBucket, Db: db}
 	})
 	return ins
+}
+
+func CreateDbInstance(path string) *DbHandler {
+	_,err:=os.Stat(path)
+	if err != os.ErrNotExist {
+		os.Remove(path)
+	}
+	return GetDbInstance(path)
 }
 
 func (dh *DbHandler) BlockChainIsExist() bool {

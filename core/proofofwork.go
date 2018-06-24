@@ -32,7 +32,7 @@ func (pow *ProofOfWork) PrepareData(nonce int64) []byte {
 			utils.ConvIntToHex(pow.block.Header.Height),
 			utils.ConvIntToHex(pow.block.Header.Timestamp),
 			pow.block.Header.PreBlockHash,
-			pow.block.Data,
+			pow.block.HashTransactions(),
 			utils.ConvIntToHex(nonce),
 		}, []byte(""))
 	return data

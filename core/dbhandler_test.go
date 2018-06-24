@@ -1,5 +1,5 @@
 package core
-
+/*
 import (
 	"fmt"
 	"strconv"
@@ -31,3 +31,4 @@ func TestDbHandler_PutBlock(t *testing.T) {
 	heigth, _ := strconv.Atoi(string(hash))
 	fmt.Println("the heigth:", heigth)
 }
+*/

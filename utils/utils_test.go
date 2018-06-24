@@ -14,3 +14,10 @@ func TestConvIntToHex(t *testing.T) {
 
 	fmt.Println("result2:", []byte(strconv.FormatInt(int64(a), 10)))
 }
+
+
+func TestRemoveIntInSlice(t *testing.T) {
+	s:=[]int{0}
+	s = RemoveIntInSlice(s,0)
+	fmt.Println(s)
+}
