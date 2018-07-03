@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/binary"
 	"log"
-	"fmt"
+	"strconv"
 )
+
+const Separator = "||"
+
 
 // Convert int64 to []byte
 func ConvIntToHex(num int64) []byte {
@@ -36,4 +39,10 @@ func ContainInt(slices []int ,a int) bool{
 		}
 	}
 	return false
+}
+
+
+func MakeCompositeKey(id []byte ,index int ) string{
+	return  string(bytes.Join([][]byte{id, []byte(strconv.Itoa(index))}, []byte(Separator)))
+
 }

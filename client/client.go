@@ -34,10 +34,10 @@ var CreateCommand = &cobra.Command{
 	Short:"Create a New blockchain",
 	Long:"Create a New blockchain",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 0 {
+		if len(args) != 1 {
 			return errors.New("Wrong args number.")
 		}
-		bc:=core.CreateBlockchain(core.SELF_ADDRESS)
+		bc:=core.CreateBlockchain(args[0])
 		if bc == nil {
 			return errors.New("Create block chain error.")
 		}
@@ -54,7 +54,7 @@ var PrintCommand = &cobra.Command{
 		if len(args)>0 {
 			return errors.New("Wrong args number.")
 		}
-		bc:=core.NewBlockchain(core.SELF_ADDRESS)
+		bc:=core.NewBlockchain("")
 		bc.Print()
 		return nil
 	},

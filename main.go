@@ -24,6 +24,7 @@ func main() {
 	mainFlags.BoolVarP(&versionFlag,"version","v",false,"Display current version of server.")
 
 	mainCmd.AddCommand(client.Cmd())
+	mainCmd.AddCommand(client.WalletCmd())
 	if mainCmd.Execute() != nil {
 		os.Exit(1)
 	}

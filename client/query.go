@@ -39,7 +39,7 @@ var infocmd = &cobra.Command{
 	Long:"get the info of the blockchai",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		bc:=core.GetBlockchain()
-		logger.Infof("Genesis Block Data:%s",string(bc.GetBlock(1).Transactions[0].Vin[0].ScriptSig))
+		logger.Infof("Genesis Block Data:%s",string(bc.GetBlock(1).Transactions[0].Vin[0].PubKey))
 		logger.Infof("Height [%d]",bc.Height)
 		logger.Infof("Transaction Num [%d]",bc.GetTransactionNum())
 		return nil
